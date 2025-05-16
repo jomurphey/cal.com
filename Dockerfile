@@ -1,20 +1,24 @@
 FROM node:18
 
+# Enable Yarn v3
 RUN corepack enable && corepack prepare yarn@stable --activate
 
 WORKDIR /app
 
-# Copy required files and directories for Yarn and Turbo
+# Copy everything Yarn needs
 COPY .yarn ./.yarn
 COPY .yarnrc.yml ./.yarnrc.yml
-COPY apps/web ./apps/web
-COPY packages ./packages
-COPY yarn.lock ./
 COPY package.json ./
+COPY yarn.lock ./
 COPY turbo.json ./
 
-RUN yarn install
-RUN cd apps/web && yarn build
+# Copy full app structure for monorepo
+COPY apps ./apps
+COPY packages ./packages
+
+# Install and build
+RUN yarn install --immutable
+RUN yarn build
 
 EXPOSE 3000
 
