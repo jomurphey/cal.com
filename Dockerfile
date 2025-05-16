@@ -1,25 +1,22 @@
 FROM node:18
 
-# Enable Yarn v3
-RUN corepack enable && corepack prepare yarn@stable --activate
+# Enable corepack so we can use yarn
+RUN corepack enable
 
+# Set working directory inside container
 WORKDIR /app
 
-# Copy everything Yarn needs
-COPY .yarn ./.yarn
-COPY .yarnrc.yml ./.yarnrc.yml
-COPY package.json ./
-COPY yarn.lock ./
-COPY turbo.json ./
+# Copy full monorepo
+COPY . .
 
-# Copy full app structure for monorepo
-COPY apps ./apps
-COPY packages ./packages
+# Install dependencies from the monorepo root
+RUN yarn install --frozen-lockfile
 
-# Install and build
-RUN yarn install --immutable
-RUN yarn build
+# Build the Cal.com web app
+RUN yarn build:web
 
+# Expose port
 EXPOSE 3000
 
-CMD ["yarn", "workspace", "web", "start"]
+# Start the app
+CMD ["yarn", "start:web"]
