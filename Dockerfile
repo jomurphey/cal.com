@@ -1,15 +1,25 @@
+# Use Node.js 18
 FROM node:18
 
+# Enable Yarn via Corepack
 RUN corepack enable && corepack prepare yarn@stable --activate
 
+# Set working directory to app
 WORKDIR /app
 
-COPY . .
+# Copy only frontend files
+COPY apps/web ./apps/web
+COPY packages ./packages
+COPY yarn.lock ./
+COPY package.json ./
+COPY turbo.json ./
 
+# Install and build only frontend
 RUN yarn install
+RUN cd apps/web && yarn build
 
-RUN yarn build
-
+# Expose Cal.com frontend port
 EXPOSE 3000
 
-CMD ["yarn", "start"]
+# Start the app
+CMD ["yarn", "workspace", "web", "start"]
