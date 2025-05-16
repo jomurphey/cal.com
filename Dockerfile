@@ -18,13 +18,13 @@ COPY apps/web ./apps/web
 COPY packages ./packages
 
 # Install dependencies for the web workspace only
-RUN yarn workspace web install --frozen-lockfile
+RUN yarn workspace @calcom/web install --frozen-lockfile
 
 # Build the web workspace
-RUN yarn workspace web build
+RUN yarn workspace @calcom/web build
 
 # Expose port
 EXPOSE 3000
 
 # Start the web app
-CMD ["yarn", "workspace", "web", "start"]
+CMD ["yarn", "workspace", "@calcom/web", "start"]
