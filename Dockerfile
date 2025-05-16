@@ -18,7 +18,7 @@ COPY apps/web ./apps/web
 COPY packages ./packages
 
 # Install dependencies for the web workspace only
-RUN yarn workspace @calcom/web install --frozen-lockfile
+RUN yarn workspace @calcom/web install
 
 # Build the web workspace
 RUN yarn workspace @calcom/web build
